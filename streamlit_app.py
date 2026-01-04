@@ -1,3 +1,15 @@
+Aqui está o código completo e corrigido.
+
+O que foi corrigido:
+
+Erro de PDF: A linha pdf.output foi atualizada para o formato compatível com as versões atuais da biblioteca fpdf2, eliminando o erro de AttributeError.
+
+Logo Centralizada: Ajustei o CSS e o container para garantir que a imagem fique exatamente no centro da página.
+
+Centralização do Botão: O botão de finalizar e o botão de download agora estão perfeitamente alinhados ao centro.
+
+Python
+
 import streamlit as st
 import pandas as pd
 from datetime import datetime
@@ -13,13 +25,14 @@ st.markdown("""
     /* Fundo do app Azul Marinho Noturno */
     .stApp { background-color: #000033; }
     
-    /* Centralização de todos os elementos de texto e imagens */
-    .center-content {
-        text-align: center;
+    /* Container para centralizar Imagem e Texto */
+    .center-all {
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
+        text-align: center;
+        width: 100%;
     }
 
     h1 { color: #FF8C00 !important; font-size: 2.5em !important; margin-bottom: 0px; text-align: center; }
@@ -36,9 +49,8 @@ st.markdown("""
         color: #ffffff !important;
     }
 
-    /* Centralização Específica dos Botões */
+    /* Centralização dos Botões */
     div.stButton {
-        text-align: center;
         display: flex;
         justify-content: center;
         margin-top: 10px;
@@ -71,14 +83,22 @@ st.markdown("""
         text-align: center;
         margin-top: 20px;
         font-weight: bold;
+        width: 100%;
     }
 
     input { color: #000033 !important; }
+
+    /* Centralizar imagem via Streamlit nativo */
+    [data-testid="stImage"] {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+    }
     </style>
     """, unsafe_allow_html=True)
 
 # 3. CABEÇALHO TOTALMENTE CENTRALIZADO
-st.markdown('<div class="center-content">', unsafe_allow_html=True)
+st.markdown('<div class="center-all">', unsafe_allow_html=True)
 try:
     st.image("logo.png", width=250)
 except:
@@ -117,7 +137,7 @@ with col_b:
 st.write(" ")
 obs = st.text_area("🗒️ Observações / Avarias")
 
-# 5. FUNÇÃO DO PDF
+# 5. FUNÇÃO DO PDF (CORRIGIDA)
 def gerar_pdf(d):
     pdf = FPDF()
     pdf.add_page()
@@ -150,7 +170,9 @@ def gerar_pdf(d):
     pdf.ln(25)
     pdf.cell(190, 10, "________________________________________", ln=True, align='C')
     pdf.cell(190, 10, "Assinatura do Agente", ln=True, align='C')
-    return pdf.output(dest='S').encode('latin-1')
+    
+    # SAÍDA CORRIGIDA PARA EVITAR ATTRIBUTE ERROR
+    return bytes(pdf.output())
 
 # 6. BOTÃO DE ENVIO E CONFIRMAÇÃO
 st.markdown("<br>", unsafe_allow_html=True)
@@ -165,25 +187,29 @@ if st.button("🚀 FINALIZAR E GERAR PDF"):
             "luzes": "OK" if luzes else "PEN", "limpeza": "OK" if limpeza else "PEN",
             "obs": obs
         }
-        pdf_bytes = gerar_pdf(info)
         
-        # EFEITO DE CELEBRAÇÃO
-        st.balloons()
-        
-        # MENSAGEM DE SUCESSO
-        st.markdown(f"""
-            <div class="success-msg">
-                ✅ CAUTELA {id_c} REGISTADA COM SUCESSO!<br>
-                O arquivo está pronto para transferência.
-            </div>
-        """, unsafe_allow_html=True)
-        
-        # BOTÃO DE DOWNLOAD CENTRALIZADO
-        st.download_button(
-            label="📥 CLIQUE PARA DESCARREGAR PDF", 
-            data=pdf_bytes, 
-            file_name=f"Cautela_{vtr}_{id_c}.pdf", 
-            mime="application/pdf"
-        )
+        try:
+            pdf_bytes = gerar_pdf(info)
+            
+            # EFEITO DE CELEBRAÇÃO
+            st.balloons()
+            
+            # MENSAGEM DE SUCESSO
+            st.markdown(f"""
+                <div class="success-msg">
+                    ✅ CAUTELA {id_c} REGISTRADA COM SUCESSO!<br>
+                    O arquivo está pronto para download.
+                </div>
+            """, unsafe_allow_html=True)
+            
+            # BOTÃO DE DOWNLOAD CENTRALIZADO
+            st.download_button(
+                label="📥 CLIQUE PARA DESCARREGAR PDF", 
+                data=pdf_bytes, 
+                file_name=f"Cautela_{vtr}_{id_c}.pdf", 
+                mime="application/pdf"
+            )
+        except Exception as e:
+            st.error(f"Erro ao gerar PDF: {e}")
     else:
         st.error("⚠️ Preencha Nome e KM antes de gerar o PDF.")
