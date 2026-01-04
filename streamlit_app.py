@@ -1,6 +1,3 @@
-
-Python
-
 import streamlit as st
 import pandas as pd
 from datetime import datetime
@@ -16,17 +13,21 @@ st.markdown("""
     /* Fundo do app Azul Marinho Noturno */
     .stApp { background-color: #000033; }
     
-    /* Centralização de todos os elementos de texto e imagens */
-    .center-all {
+    /* Centralização de Imagens (Logo) */
+    [data-testid="stImage"] {
         display: flex;
-        flex-direction: column;
-        align-items: center;
         justify-content: center;
-        text-align: center;
-        width: 100%;
+        margin-left: auto;
+        margin-right: auto;
     }
 
-    h1 { color: #FF8C00 !important; font-size: 2.5em !important; margin-bottom: 0px; text-align: center; }
+    /* Centralização de Textos */
+    .center-text {
+        text-align: center;
+        color: white;
+    }
+
+    h1 { color: #FF8C00 !important; font-size: 2.2em !important; margin-bottom: 0px; text-align: center; }
     h3 { color: #ffffff !important; margin-top: 0px; font-weight: normal; text-align: center; }
 
     /* Estilo dos rótulos (Labels) */
@@ -55,7 +56,8 @@ st.markdown("""
         height: 4.5em;
         font-size: 1.1em;
         font-weight: bold;
-        width: 85%;
+        width: 100%;
+        max-width: 400px;
     }
     
     .stButton>button:hover {
@@ -74,31 +76,25 @@ st.markdown("""
         text-align: center;
         margin-top: 20px;
         font-weight: bold;
-        width: 100%;
     }
 
-    input { color: #000033 !important; }
-
-    /* Centralizar imagem via Streamlit nativo */
-    [data-testid="stImage"] {
-        display: block;
-        margin-left: auto;
-        margin-right: auto;
-        text-align: center;
+    /* Estilo dos inputs */
+    .stTextInput input, .stNumberInput input {
+        color: #000033 !important;
     }
     </style>
     """, unsafe_allow_html=True)
 
-# 3. CABEÇALHO TOTALMENTE CENTRALIZADO
-st.markdown('<div class="center-all">', unsafe_allow_html=True)
+# 3. CABEÇALHO CENTRALIZADO
+# Logo
 try:
     st.image("logo.png", width=250)
 except:
-    st.write("🛡️")
+    st.markdown("<h1 style='text-align: center;'>🛡️</h1>", unsafe_allow_html=True)
 
-st.markdown('<h1>Defesa Civil Municipal</h1>', unsafe_allow_html=True)
-st.markdown('<h3>Cidade Ocidental - GO</h3>', unsafe_allow_html=True)
-st.markdown('</div>', unsafe_allow_html=True)
+# Títulos
+st.markdown("<h1>Defesa Civil Municipal</h1>", unsafe_allow_html=True)
+st.markdown("<h3>Cidade Ocidental - GO</h3>", unsafe_allow_html=True)
 
 st.markdown("<hr style='border: 1px solid #FF8C00'>", unsafe_allow_html=True)
 
@@ -129,7 +125,7 @@ with col_b:
 st.write(" ")
 obs = st.text_area("🗒️ Observações / Avarias")
 
-# 5. FUNÇÃO DO PDF (VERSÃO COMPATÍVEL)
+# 5. FUNÇÃO DO PDF (VERSÃO ESTÁVEL)
 def gerar_pdf(d):
     pdf = FPDF()
     pdf.add_page()
