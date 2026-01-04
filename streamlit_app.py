@@ -1,12 +1,3 @@
-Aqui está o código completo e corrigido.
-
-O que foi corrigido:
-
-Erro de PDF: A linha pdf.output foi atualizada para o formato compatível com as versões atuais da biblioteca fpdf2, eliminando o erro de AttributeError.
-
-Logo Centralizada: Ajustei o CSS e o container para garantir que a imagem fique exatamente no centro da página.
-
-Centralização do Botão: O botão de finalizar e o botão de download agora estão perfeitamente alinhados ao centro.
 
 Python
 
@@ -25,7 +16,7 @@ st.markdown("""
     /* Fundo do app Azul Marinho Noturno */
     .stApp { background-color: #000033; }
     
-    /* Container para centralizar Imagem e Texto */
+    /* Centralização de todos os elementos de texto e imagens */
     .center-all {
         display: flex;
         flex-direction: column;
@@ -93,6 +84,7 @@ st.markdown("""
         display: block;
         margin-left: auto;
         margin-right: auto;
+        text-align: center;
     }
     </style>
     """, unsafe_allow_html=True)
@@ -137,7 +129,7 @@ with col_b:
 st.write(" ")
 obs = st.text_area("🗒️ Observações / Avarias")
 
-# 5. FUNÇÃO DO PDF (CORRIGIDA)
+# 5. FUNÇÃO DO PDF (VERSÃO COMPATÍVEL)
 def gerar_pdf(d):
     pdf = FPDF()
     pdf.add_page()
@@ -171,7 +163,6 @@ def gerar_pdf(d):
     pdf.cell(190, 10, "________________________________________", ln=True, align='C')
     pdf.cell(190, 10, "Assinatura do Agente", ln=True, align='C')
     
-    # SAÍDA CORRIGIDA PARA EVITAR ATTRIBUTE ERROR
     return bytes(pdf.output())
 
 # 6. BOTÃO DE ENVIO E CONFIRMAÇÃO
@@ -190,11 +181,7 @@ if st.button("🚀 FINALIZAR E GERAR PDF"):
         
         try:
             pdf_bytes = gerar_pdf(info)
-            
-            # EFEITO DE CELEBRAÇÃO
             st.balloons()
-            
-            # MENSAGEM DE SUCESSO
             st.markdown(f"""
                 <div class="success-msg">
                     ✅ CAUTELA {id_c} REGISTRADA COM SUCESSO!<br>
@@ -202,7 +189,6 @@ if st.button("🚀 FINALIZAR E GERAR PDF"):
                 </div>
             """, unsafe_allow_html=True)
             
-            # BOTÃO DE DOWNLOAD CENTRALIZADO
             st.download_button(
                 label="📥 CLIQUE PARA DESCARREGAR PDF", 
                 data=pdf_bytes, 
