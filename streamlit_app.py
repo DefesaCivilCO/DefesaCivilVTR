@@ -174,7 +174,7 @@ if st.button("🚀 FINALIZAR E GERAR PDF"):
         st.markdown(f"""
             <div class="success-msg">
                 ✅ CAUTELA {id_c} REGISTADA COM SUCESSO!<br>
-                Encaminhe o registro no grupo de Whatsapp.
+                O arquivo está pronto para transferência.
             </div>
         """, unsafe_allow_html=True)
         
