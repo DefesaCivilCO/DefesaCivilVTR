@@ -66,4 +66,54 @@ def gerar_pdf(d):
     pdf.cell(95, 10, f"Data: {d['data']}", border=1)
     pdf.cell(95, 10, f"Viatura: {d['vtr']}", border=1, ln=True)
     pdf.cell(95, 10, f"Agente: {d['agente']}", border=1)
-    pdf.cell(95, 10, f"KM Atual: {d['
+    pdf.cell(95, 10, f"KM Atual: {d['km']}", border=1, ln=True)
+    
+    pdf.ln(5)
+    pdf.set_font("Helvetica", "B", 12)
+    pdf.cell(190, 10, "Checklist de Verificacao:", ln=True)
+    pdf.set_font("Helvetica", "", 11)
+    
+    check_list = [
+        f"Oleo: {d['oleo']}", f"Agua: {d['agua']}", f"Freio: {d['freio']}",
+        f"Pneus: {d['pneus']}", f"Luzes: {d['luzes']}", f"Limpeza: {d['limpeza']}"
+    ]
+    
+    for item in check_list:
+        pdf.cell(190, 8, f"- {item}", ln=True)
+    
+    if d['obs']:
+        pdf.ln(5)
+        pdf.multi_cell(190, 8, f"Obs: {d['obs']}", border=1)
+        
+    pdf.ln(20)
+    pdf.cell(190, 10, "________________________________________", ln=True, align='C')
+    pdf.cell(190, 10, "Assinatura do Agente", ln=True, align='C')
+    
+    return pdf.output()
+
+# --- BOTÃO FINALIZAR ---
+if st.button("GERAR COMPROVANTE PDF"):
+    if agente and km > 0:
+        id_cautela = str(uuid.uuid4())[:8].upper()
+        info = {
+            "id": id_cautela, "data": data_hoje, "agente": agente,
+            "vtr": vtr, "km": km, 
+            "oleo": "OK" if oleo else "Pendente",
+            "agua": "OK" if agua else "Pendente",
+            "freio": "OK" if freio else "Pendente",
+            "pneus": "OK" if pneus else "Pendente",
+            "luzes": "OK" if luzes else "Pendente",
+            "limpeza": "OK" if limpeza else "Pendente",
+            "obs": obs
+        }
+        
+        pdf_out = gerar_pdf(info)
+        st.success(f"✅ Cautela {id_cautela} Gerada!")
+        st.download_button(
+            label="📥 BAIXAR PDF",
+            data=bytes(pdf_out),
+            file_name=f"Cautela_{id_cautela}.pdf",
+            mime="application/pdf"
+        )
+    else:
+        st.error("Preencha o nome e a quilometragem.")
