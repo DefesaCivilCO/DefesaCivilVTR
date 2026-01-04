@@ -102,7 +102,11 @@ st.markdown("<hr style='border: 1px solid #FF8C00'>", unsafe_allow_html=True)
 
 # 4. FORMULÁRIO DE CAUTELA
 st.markdown("### 📝 Identificação")
-agente = st.text_input("Nome do Agente Responsável")
+col_ident1, col_ident2 = st.columns([3, 1])
+with col_ident1:
+    agente = st.text_input("Nome do Agente Responsável")
+with col_ident2:
+    matricula = st.text_input("Matrícula")
 
 c1, c2 = st.columns(2)
 with c1:
@@ -142,24 +146,37 @@ def gerar_pdf(d):
     pdf.ln(10)
     pdf.set_text_color(0, 0, 0)
     pdf.set_font("Arial", "B", 11)
+    
     pdf.cell(40, 10, "Data/Hora:", border=1)
     pdf.set_font("Arial", "", 11)
     pdf.cell(150, 10, d['data'], border=1, ln=True)
+    
+    pdf.set_font("Arial", "B", 11)
     pdf.cell(40, 10, "Agente:", border=1)
-    pdf.cell(150, 10, d['agente'], border=1, ln=True)
+    pdf.set_font("Arial", "", 11)
+    pdf.cell(150, 10, f"{d['agente']} (Mat: {d['matricula']})", border=1, ln=True)
+    
+    pdf.set_font("Arial", "B", 11)
     pdf.cell(40, 10, "VTR / KM:", border=1)
+    pdf.set_font("Arial", "", 11)
     pdf.cell(150, 10, f"{d['vtr']} - KM {d['km']}", border=1, ln=True)
+    
     pdf.ln(10)
     pdf.set_font("Arial", "B", 12)
     pdf.cell(190, 10, "ITENS VERIFICADOS:", ln=True)
     pdf.set_font("Arial", "", 11)
     pdf.multi_cell(190, 8, f"Oleo: {d['oleo']} | Agua: {d['agua']} | Freio: {d['freio']}\nPneus: {d['pneus']} | Luzes: {d['luzes']} | Limpeza: {d['limpeza']}", border=1)
+    
     if d['obs']:
         pdf.ln(5)
         pdf.multi_cell(190, 8, f"Obs: {d['obs']}", border=1)
+    
     pdf.ln(25)
     pdf.cell(190, 10, "________________________________________", ln=True, align='C')
-    pdf.cell(190, 10, "Assinatura do Agente", ln=True, align='C')
+    pdf.set_font("Arial", "B", 11)
+    pdf.cell(190, 10, d['agente'], ln=True, align='C')
+    pdf.set_font("Arial", "", 10)
+    pdf.cell(190, 5, "Assinatura do Agente", ln=True, align='C')
     
     return bytes(pdf.output())
 
@@ -170,7 +187,8 @@ if st.button("🚀 FINALIZAR E GERAR PDF"):
         id_c = str(uuid.uuid4())[:8].upper()
         data_f = datetime.now().strftime("%d/%m/%Y %H:%M")
         info = {
-            "id": id_c, "data": data_f, "agente": agente, "vtr": vtr, "km": km,
+            "id": id_c, "data": data_f, "agente": agente, "matricula": matricula, 
+            "vtr": vtr, "km": km,
             "oleo": "OK" if oleo else "PEN", "agua": "OK" if agua else "PEN",
             "freio": "OK" if freio else "PEN", "pneus": "OK" if pneus else "PEN",
             "luzes": "OK" if luzes else "PEN", "limpeza": "OK" if limpeza else "PEN",
