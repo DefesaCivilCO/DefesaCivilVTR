@@ -7,27 +7,25 @@ from fpdf import FPDF
 # 1. CONFIGURAÇÃO DA PÁGINA
 st.set_page_config(page_title="Defesa Civil Municipal - Cautela", page_icon="🛡️")
 
-# 2. PERSONALIZAÇÃO DE CORES (AZUL MARINHO NOTURNO E LARANJA)
+# 2. PERSONALIZAÇÃO DE CORES E CENTRALIZAÇÃO TOTAL
 st.markdown("""
     <style>
     /* Fundo do app Azul Marinho Noturno */
     .stApp { background-color: #000033; }
     
-    /* Estilo dos Containers (Cards) */
-    div[data-testid="stVerticalBlock"] > div {
-        color: white;
-    }
-
-    /* Centralização e Cores do Cabeçalho */
-    .header-container {
+    /* Centralização de todos os elementos de texto e imagens */
+    .center-content {
         text-align: center;
-        padding-bottom: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
     }
-    
-    h1 { color: #FF8C00 !important; font-size: 2.5em !important; margin-bottom: 0px; }
-    h3 { color: #ffffff !important; margin-top: 0px; font-weight: normal; }
 
-    /* Estilo dos rótulos dos campos */
+    h1 { color: #FF8C00 !important; font-size: 2.5em !important; margin-bottom: 0px; text-align: center; }
+    h3 { color: #ffffff !important; margin-top: 0px; font-weight: normal; text-align: center; }
+
+    /* Estilo dos rótulos (Labels) */
     label { 
         color: #FF8C00 !important; 
         font-weight: bold !important;
@@ -38,31 +36,54 @@ st.markdown("""
         color: #ffffff !important;
     }
 
-    /* Botão Principal Laranja Vibrante */
+    /* Centralização Específica dos Botões */
+    div.stButton {
+        text-align: center;
+        display: flex;
+        justify-content: center;
+        margin-top: 10px;
+    }
+
     .stButton>button {
         background-color: #FF8C00;
         color: white;
         border-radius: 12px;
         border: 2px solid #ffffff;
-        height: 4em;
-        font-size: 1.2em;
+        height: 4.5em;
+        font-size: 1.1em;
         font-weight: bold;
-        width: 100%;
+        width: 85%;
     }
+    
     .stButton>button:hover {
         background-color: #ffffff;
         color: #FF8C00;
+        border: 2px solid #FF8C00;
     }
+
+    /* Mensagem de sucesso personalizada */
+    .success-msg {
+        background-color: rgba(0, 255, 0, 0.1);
+        border: 1px solid #00ff00;
+        color: #00ff00;
+        padding: 15px;
+        border-radius: 10px;
+        text-align: center;
+        margin-top: 20px;
+        font-weight: bold;
+    }
+
+    input { color: #000033 !important; }
     </style>
     """, unsafe_allow_html=True)
 
-# 3. CABEÇALHO CENTRALIZADO
-st.markdown('<div class="header-container">', unsafe_allow_html=True)
+# 3. CABEÇALHO TOTALMENTE CENTRALIZADO
+st.markdown('<div class="center-content">', unsafe_allow_html=True)
 try:
-    # Exibe a logo centralizada
     st.image("logo.png", width=250)
 except:
     st.write("🛡️")
+
 st.markdown('<h1>Defesa Civil Municipal</h1>', unsafe_allow_html=True)
 st.markdown('<h3>Cidade Ocidental - GO</h3>', unsafe_allow_html=True)
 st.markdown('</div>', unsafe_allow_html=True)
@@ -131,7 +152,8 @@ def gerar_pdf(d):
     pdf.cell(190, 10, "Assinatura do Agente", ln=True, align='C')
     return pdf.output(dest='S').encode('latin-1')
 
-# 6. BOTÃO FINAL
+# 6. BOTÃO DE ENVIO E CONFIRMAÇÃO
+st.markdown("<br>", unsafe_allow_html=True)
 if st.button("🚀 FINALIZAR E GERAR PDF"):
     if agente and km > 0:
         id_c = str(uuid.uuid4())[:8].upper()
@@ -144,7 +166,24 @@ if st.button("🚀 FINALIZAR E GERAR PDF"):
             "obs": obs
         }
         pdf_bytes = gerar_pdf(info)
-        st.success(f"### Cautela Registrada!")
-        st.download_button(label="📥 BAIXAR PDF PARA ENVIO", data=pdf_bytes, file_name=f"Cautela_{id_c}.pdf", mime="application/pdf")
+        
+        # EFEITO DE CELEBRAÇÃO
+        st.balloons()
+        
+        # MENSAGEM DE SUCESSO
+        st.markdown(f"""
+            <div class="success-msg">
+                ✅ CAUTELA {id_c} REGISTADA COM SUCESSO!<br>
+                Encaminhe o registro no grupo de Whatsapp.
+            </div>
+        """, unsafe_allow_html=True)
+        
+        # BOTÃO DE DOWNLOAD CENTRALIZADO
+        st.download_button(
+            label="📥 CLIQUE PARA DESCARREGAR PDF", 
+            data=pdf_bytes, 
+            file_name=f"Cautela_{vtr}_{id_c}.pdf", 
+            mime="application/pdf"
+        )
     else:
-        st.error("⚠️ Preencha Nome e KM.")
+        st.error("⚠️ Preencha Nome e KM antes de gerar o PDF.")
