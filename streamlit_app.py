@@ -27,6 +27,14 @@ st.markdown("""
         margin: 0; 
         opacity: 0.8; 
     }
+    
+    /* Destaque em Laranja para seções */
+    .section-orange {
+        color: #FF8C00 !important;
+        font-weight: bold;
+        font-size: 1.5em;
+        margin-bottom: 10px;
+    }
 
     /* Estilo dos rótulos (Labels) */
     label { 
@@ -39,7 +47,7 @@ st.markdown("""
         color: #000033 !important;
     }
 
-    /* CENTRALIZAÇÃO TOTAL DO BOTÃO NO MEIO DA PÁGINA */
+    /* CENTRALIZAÇÃO TOTAL DO BOTÃO */
     div.stButton {
         display: flex;
         justify-content: center;
@@ -58,7 +66,7 @@ st.markdown("""
         font-size: 1.1em;
         font-weight: bold;
         width: 100%;
-        max-width: 450px; /* Limita a largura para não ficar exagerado */
+        max-width: 450px;
     }
     
     .stButton>button:hover {
@@ -109,7 +117,7 @@ with col_txt:
 st.markdown("<hr style='border: 1.1px solid #FF8C00'>", unsafe_allow_html=True)
 
 # 4. FORMULÁRIO DE CAUTELA
-st.markdown("### 📝 Identificação")
+st.markdown("<div class='section-orange'>📝 Identificação</div>", unsafe_allow_html=True)
 col_ident1, col_ident2 = st.columns([3, 1])
 with col_ident1:
     agente = st.text_input("Nome do Agente Responsável")
@@ -124,7 +132,7 @@ with c2:
 
 st.write(" ")
 
-st.markdown("### 📋 Checklist de Inspeção")
+st.markdown("<div class='section-orange'>📋 Checklist de Inspeção</div>", unsafe_allow_html=True)
 col_a, col_b = st.columns(2)
 
 with col_a:
@@ -220,7 +228,7 @@ if st.button("🚀 FINALIZAR E GERAR PDF"):
                 </div>
             """, unsafe_allow_html=True)
             
-            # Botão de download também centralizado pelo CSS acima
+            # Download centralizado
             st.download_button(
                 label="📥 BAIXAR DOCUMENTO PDF", 
                 data=pdf_bytes, 
