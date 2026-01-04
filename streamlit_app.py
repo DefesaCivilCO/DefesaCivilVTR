@@ -13,20 +13,20 @@ st.markdown("""
     /* Fundo do app Branco */
     .stApp { background-color: #ffffff; }
     
-    /* Container para alinhar Logo e Texto Lado a Lado */
-    .header-box {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 20px;
-        padding: 20px;
-        width: 100%;
-    }
-
     /* Cores dos Títulos */
-    .title-blue { color: #000033; font-size: 2.2em; font-weight: bold; margin: 0; }
-    .highlight-orange { color: #FF8C00; }
-    .subtitle-blue { color: #000033; font-size: 1.2em; margin: 0; opacity: 0.8; }
+    .title-orange { 
+        color: #FF8C00; 
+        font-size: 2.2em; 
+        font-weight: bold; 
+        margin: 0; 
+        line-height: 1.1;
+    }
+    .subtitle-blue { 
+        color: #000033; 
+        font-size: 1.2em; 
+        margin: 0; 
+        opacity: 0.8; 
+    }
 
     /* Estilo dos rótulos (Labels) */
     label { 
@@ -39,11 +39,14 @@ st.markdown("""
         color: #000033 !important;
     }
 
-    /* Estilo dos Botões */
+    /* CENTRALIZAÇÃO TOTAL DO BOTÃO NO MEIO DA PÁGINA */
     div.stButton {
         display: flex;
         justify-content: center;
-        margin-top: 20px;
+        align-items: center;
+        margin-top: 30px;
+        margin-bottom: 30px;
+        width: 100%;
     }
 
     .stButton>button {
@@ -51,16 +54,17 @@ st.markdown("""
         color: #ffffff;
         border-radius: 8px;
         border: 2px solid #FF8C00;
-        height: 3.5em;
+        height: 3.8em;
         font-size: 1.1em;
         font-weight: bold;
         width: 100%;
-        max-width: 400px;
+        max-width: 450px; /* Limita a largura para não ficar exagerado */
     }
     
     .stButton>button:hover {
         background-color: #FF8C00;
         color: #ffffff;
+        border: 2px solid #000033;
     }
 
     /* Mensagem de sucesso */
@@ -74,9 +78,10 @@ st.markdown("""
         margin-top: 20px;
     }
 
-    /* Cor das bordas dos inputs */
-    .stTextInput input, .stNumberInput input, .stSelectbox select {
-        border-color: #000033 !important;
+    /* Alinhamento da Logo */
+    [data-testid="stImage"] {
+        display: flex;
+        justify-content: center;
     }
     </style>
     """, unsafe_allow_html=True)
@@ -86,22 +91,22 @@ col_logo, col_txt = st.columns([1, 2])
 
 with col_logo:
     try:
-        st.image("logo.png", width=150)
+        st.image("logo.png", width=160)
     except:
         st.markdown("<h1 style='text-align: right;'>🛡️</h1>", unsafe_allow_html=True)
 
 with col_txt:
     st.markdown(f"""
-        <div style='display: flex; flex-direction: column; justify-content: center; height: 150px;'>
-            <div class='title-blue'>
-                <span class='highlight-orange'>DEFESA</span> CIVIL<br>
-                <span class='highlight-orange'>MUNICIPAL</span>
+        <div style='display: flex; flex-direction: column; justify-content: center; height: 160px;'>
+            <div class='title-orange'>
+                DEFESA CIVIL<br>
+                MUNICIPAL
             </div>
             <div class='subtitle-blue'>Cidade Ocidental - GO</div>
         </div>
     """, unsafe_allow_html=True)
 
-st.markdown("<hr style='border: 1px solid #FF8C00'>", unsafe_allow_html=True)
+st.markdown("<hr style='border: 1.1px solid #FF8C00'>", unsafe_allow_html=True)
 
 # 4. FORMULÁRIO DE CAUTELA
 st.markdown("### 📝 Identificação")
@@ -147,7 +152,7 @@ def gerar_pdf(d):
     pdf.cell(190, 10, "CIDADE OCIDENTAL - GO", ln=True, align='C')
     pdf.ln(5)
     
-    # ID em Laranja (aproximado no PDF)
+    # ID em Laranja
     pdf.set_text_color(255, 140, 0)
     pdf.cell(190, 10, f"CAUTELA ID: {d['id']}", ln=True, align='C')
     pdf.ln(10)
@@ -215,6 +220,7 @@ if st.button("🚀 FINALIZAR E GERAR PDF"):
                 </div>
             """, unsafe_allow_html=True)
             
+            # Botão de download também centralizado pelo CSS acima
             st.download_button(
                 label="📥 BAIXAR DOCUMENTO PDF", 
                 data=pdf_bytes, 
