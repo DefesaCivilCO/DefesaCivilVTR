@@ -7,57 +7,51 @@ from fpdf import FPDF
 # 1. CONFIGURAÇÃO DA PÁGINA
 st.set_page_config(page_title="Defesa Civil Municipal - Cautela", page_icon="🛡️")
 
-# 2. PERSONALIZAÇÃO DE CORES E CENTRALIZAÇÃO TOTAL
+# 2. PERSONALIZAÇÃO DE CORES (FUNDO BRANCO, TEXTO AZUL MARINHO E LARANJA)
 st.markdown("""
     <style>
-    /* Fundo do app Azul Marinho Noturno */
-    .stApp { background-color: #000033; }
+    /* Fundo do app Branco */
+    .stApp { background-color: #ffffff; }
     
-    /* Centralização Absoluta da Logo e Títulos */
-    .header-container {
+    /* Container para alinhar Logo e Texto Lado a Lado */
+    .header-box {
         display: flex;
-        flex-direction: column;
         align-items: center;
         justify-content: center;
-        text-align: center;
-        width: 100%;
-        margin-bottom: 20px;
-    }
-
-    /* Garantir que a imagem do Streamlit herde a centralização */
-    [data-testid="stImage"] {
-        display: flex;
-        justify-content: center;
+        gap: 20px;
+        padding: 20px;
         width: 100%;
     }
 
-    h1 { color: #FF8C00 !important; font-size: 2.2em !important; margin-bottom: 0px; text-align: center; width: 100%; }
-    h3 { color: #ffffff !important; margin-top: 0px; font-weight: normal; text-align: center; width: 100%; }
+    /* Cores dos Títulos */
+    .title-blue { color: #000033; font-size: 2.2em; font-weight: bold; margin: 0; }
+    .highlight-orange { color: #FF8C00; }
+    .subtitle-blue { color: #000033; font-size: 1.2em; margin: 0; opacity: 0.8; }
 
     /* Estilo dos rótulos (Labels) */
     label { 
-        color: #FF8C00 !important; 
+        color: #000033 !important; 
         font-weight: bold !important;
     }
     
     /* Texto dos Checkboxes */
     .stCheckbox label p {
-        color: #ffffff !important;
+        color: #000033 !important;
     }
 
-    /* Centralização dos Botões */
+    /* Estilo dos Botões */
     div.stButton {
         display: flex;
         justify-content: center;
-        margin-top: 10px;
+        margin-top: 20px;
     }
 
     .stButton>button {
-        background-color: #FF8C00;
-        color: white;
-        border-radius: 12px;
-        border: 2px solid #ffffff;
-        height: 4.5em;
+        background-color: #000033;
+        color: #ffffff;
+        border-radius: 8px;
+        border: 2px solid #FF8C00;
+        height: 3.5em;
         font-size: 1.1em;
         font-weight: bold;
         width: 100%;
@@ -65,39 +59,47 @@ st.markdown("""
     }
     
     .stButton>button:hover {
-        background-color: #ffffff;
-        color: #FF8C00;
-        border: 2px solid #FF8C00;
+        background-color: #FF8C00;
+        color: #ffffff;
     }
 
-    /* Mensagem de sucesso personalizada */
+    /* Mensagem de sucesso */
     .success-msg {
-        background-color: rgba(0, 255, 0, 0.1);
-        border: 1px solid #00ff00;
-        color: #00ff00;
+        background-color: #f0fff4;
+        border: 1px solid #FF8C00;
+        color: #000033;
         padding: 15px;
         border-radius: 10px;
         text-align: center;
         margin-top: 20px;
-        font-weight: bold;
     }
 
-    /* Ajuste de cor dos campos de entrada */
-    input { color: #000033 !important; }
+    /* Cor das bordas dos inputs */
+    .stTextInput input, .stNumberInput input, .stSelectbox select {
+        border-color: #000033 !important;
+    }
     </style>
     """, unsafe_allow_html=True)
 
-# 3. CABEÇALHO CENTRALIZADO
-st.markdown('<div class="header-container">', unsafe_allow_html=True)
-try:
-    # Aumentando um pouco o tamanho para 300 para melhor visualização
-    st.image("logo.png", width=300)
-except:
-    st.markdown("<h1>🛡️</h1>", unsafe_allow_html=True)
+# 3. CABEÇALHO LADO A LADO E CENTRALIZADO
+col_logo, col_txt = st.columns([1, 2])
 
-st.markdown("<h1>Defesa Civil Municipal</h1>", unsafe_allow_html=True)
-st.markdown("<h3>Cidade Ocidental - GO</h3>", unsafe_allow_html=True)
-st.markdown('</div>', unsafe_allow_html=True)
+with col_logo:
+    try:
+        st.image("logo.png", width=150)
+    except:
+        st.markdown("<h1 style='text-align: right;'>🛡️</h1>", unsafe_allow_html=True)
+
+with col_txt:
+    st.markdown(f"""
+        <div style='display: flex; flex-direction: column; justify-content: center; height: 150px;'>
+            <div class='title-blue'>
+                <span class='highlight-orange'>DEFESA</span> CIVIL<br>
+                <span class='highlight-orange'>MUNICIPAL</span>
+            </div>
+            <div class='subtitle-blue'>Cidade Ocidental - GO</div>
+        </div>
+    """, unsafe_allow_html=True)
 
 st.markdown("<hr style='border: 1px solid #FF8C00'>", unsafe_allow_html=True)
 
@@ -132,20 +134,20 @@ with col_b:
 st.write(" ")
 obs = st.text_area("🗒️ Observações / Avarias")
 
-# 5. FUNÇÃO DO PDF (VERSÃO REVISADA)
+# 5. FUNÇÃO DO PDF
 def gerar_pdf(d):
     pdf = FPDF()
     pdf.add_page()
     
     # Cabeçalho do PDF
     pdf.set_font("Arial", "B", 16)
-    pdf.set_text_color(0, 0, 51)
+    pdf.set_text_color(0, 0, 51) # Azul Marinho
     pdf.cell(190, 10, "DEFESA CIVIL MUNICIPAL", ln=True, align='C')
     pdf.set_font("Arial", "B", 12)
     pdf.cell(190, 10, "CIDADE OCIDENTAL - GO", ln=True, align='C')
     pdf.ln(5)
     
-    # ID da Cautela
+    # ID em Laranja (aproximado no PDF)
     pdf.set_text_color(255, 140, 0)
     pdf.cell(190, 10, f"CAUTELA ID: {d['id']}", ln=True, align='C')
     pdf.ln(10)
@@ -161,7 +163,6 @@ def gerar_pdf(d):
     pdf.set_font("Arial", "B", 11)
     pdf.cell(40, 10, "Agente:", border=1)
     pdf.set_font("Arial", "", 11)
-    # Exibe o nome do agente no topo do PDF
     pdf.cell(150, 10, f"{d['agente']} (Mat: {d['matricula']})", border=1, ln=True)
     
     pdf.set_font("Arial", "B", 11)
@@ -179,18 +180,17 @@ def gerar_pdf(d):
         pdf.ln(5)
         pdf.multi_cell(190, 8, f"Obs: {d['obs']}", border=1)
     
-    # CAMPO DE ASSINATURA PERSONALIZADO
+    # Assinatura
     pdf.ln(30)
     pdf.cell(190, 10, "________________________________________", ln=True, align='C')
     pdf.set_font("Arial", "B", 11)
-    # O NOME DO AGENTE APARECE AQUI ABAIXO DA LINHA
     pdf.cell(190, 7, d['agente'].upper(), ln=True, align='C')
     pdf.set_font("Arial", "", 10)
     pdf.cell(190, 5, "Assinatura do Agente", ln=True, align='C')
     
     return bytes(pdf.output())
 
-# 6. BOTÃO DE ENVIO E CONFIRMAÇÃO
+# 6. BOTÃO DE ENVIO
 st.markdown("<br>", unsafe_allow_html=True)
 if st.button("🚀 FINALIZAR E GERAR PDF"):
     if agente and km > 0:
@@ -210,13 +210,13 @@ if st.button("🚀 FINALIZAR E GERAR PDF"):
             st.balloons()
             st.markdown(f"""
                 <div class="success-msg">
-                    ✅ CAUTELA {id_c} REGISTRADA COM SUCESSO!<br>
-                    O arquivo está pronto para download.
+                    ✅ <b>CAUTELA {id_c} REGISTRADA!</b><br>
+                    O documento foi gerado com sucesso.
                 </div>
             """, unsafe_allow_html=True)
             
             st.download_button(
-                label="📥 CLIQUE PARA DESCARREGAR PDF", 
+                label="📥 BAIXAR DOCUMENTO PDF", 
                 data=pdf_bytes, 
                 file_name=f"Cautela_{vtr}_{id_c}.pdf", 
                 mime="application/pdf"
@@ -224,4 +224,4 @@ if st.button("🚀 FINALIZAR E GERAR PDF"):
         except Exception as e:
             st.error(f"Erro ao gerar PDF: {e}")
     else:
-        st.error("⚠️ Preencha Nome e KM antes de gerar o PDF.")
+        st.error("⚠️ Por favor, preencha o Nome do Agente e a KM.")
