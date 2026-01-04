@@ -24,11 +24,11 @@ st.markdown("""
         margin-bottom: 20px;
     }
 
-    /* Forçar imagem ao centro */
+    /* Garantir que a imagem do Streamlit herde a centralização */
     [data-testid="stImage"] {
-        display: block;
-        margin-left: auto;
-        margin-right: auto;
+        display: flex;
+        justify-content: center;
+        width: 100%;
     }
 
     h1 { color: #FF8C00 !important; font-size: 2.2em !important; margin-bottom: 0px; text-align: center; width: 100%; }
@@ -90,7 +90,8 @@ st.markdown("""
 # 3. CABEÇALHO CENTRALIZADO
 st.markdown('<div class="header-container">', unsafe_allow_html=True)
 try:
-    st.image("logo.png", width=250)
+    # Aumentando um pouco o tamanho para 300 para melhor visualização
+    st.image("logo.png", width=300)
 except:
     st.markdown("<h1>🛡️</h1>", unsafe_allow_html=True)
 
@@ -131,19 +132,25 @@ with col_b:
 st.write(" ")
 obs = st.text_area("🗒️ Observações / Avarias")
 
-# 5. FUNÇÃO DO PDF (VERSÃO ATUALIZADA)
+# 5. FUNÇÃO DO PDF (VERSÃO REVISADA)
 def gerar_pdf(d):
     pdf = FPDF()
     pdf.add_page()
+    
+    # Cabeçalho do PDF
     pdf.set_font("Arial", "B", 16)
     pdf.set_text_color(0, 0, 51)
     pdf.cell(190, 10, "DEFESA CIVIL MUNICIPAL", ln=True, align='C')
     pdf.set_font("Arial", "B", 12)
     pdf.cell(190, 10, "CIDADE OCIDENTAL - GO", ln=True, align='C')
     pdf.ln(5)
+    
+    # ID da Cautela
     pdf.set_text_color(255, 140, 0)
     pdf.cell(190, 10, f"CAUTELA ID: {d['id']}", ln=True, align='C')
     pdf.ln(10)
+    
+    # Informações Técnicas
     pdf.set_text_color(0, 0, 0)
     pdf.set_font("Arial", "B", 11)
     
@@ -154,6 +161,7 @@ def gerar_pdf(d):
     pdf.set_font("Arial", "B", 11)
     pdf.cell(40, 10, "Agente:", border=1)
     pdf.set_font("Arial", "", 11)
+    # Exibe o nome do agente no topo do PDF
     pdf.cell(150, 10, f"{d['agente']} (Mat: {d['matricula']})", border=1, ln=True)
     
     pdf.set_font("Arial", "B", 11)
@@ -171,10 +179,12 @@ def gerar_pdf(d):
         pdf.ln(5)
         pdf.multi_cell(190, 8, f"Obs: {d['obs']}", border=1)
     
-    pdf.ln(25)
+    # CAMPO DE ASSINATURA PERSONALIZADO
+    pdf.ln(30)
     pdf.cell(190, 10, "________________________________________", ln=True, align='C')
     pdf.set_font("Arial", "B", 11)
-    pdf.cell(190, 10, d['agente'], ln=True, align='C')
+    # O NOME DO AGENTE APARECE AQUI ABAIXO DA LINHA
+    pdf.cell(190, 7, d['agente'].upper(), ln=True, align='C')
     pdf.set_font("Arial", "", 10)
     pdf.cell(190, 5, "Assinatura do Agente", ln=True, align='C')
     
